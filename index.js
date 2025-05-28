@@ -31,7 +31,7 @@ export default async ({ req, res, log, error }) => {
   else if(req.path === "/create")
   {
     const body = JSON.parse(req.body);
-    const createMessageDoc = await db.createDocument('669318d2002a5431ce91', '6695461400342d012490', ID.unique(), { folder: body.folder, message: body.message, seen: false }, [ Permission.read(Role.user(userId)), Permission.write(Role.user(userId))]);
+    const createMessageDoc = await db.createDocument('669318d2002a5431ce91', '6695461400342d012490', ID.unique(), { folder: body.folder, message: body.message, seen: false }, [ Permission.write(Role.user(userId))]);
   }
   
   return res.json({ status: "complete" });
