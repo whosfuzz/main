@@ -32,8 +32,15 @@ export default async ({ req, res, log, error }) => {
   {
     const body = JSON.parse(req.body);
     log(body);
-    //const getDiscordUserDoc = await db.getDocument('669318d2002a5431ce91', '683661c0000023c9dd0b', 
-    //const createMessageDoc = await db.createDocument('669318d2002a5431ce91', '6695461400342d012490', ID.unique(), { folder: body.folder, message: body.message, seen: false, createdBy:  }, [ Permission.write(Role.user(userId))]);
+    try
+    {
+      const getDiscordUserDoc = await db.getDocument('669318d2002a5431ce91', '683661c0000023c9dd0b', userId);
+      const createMessageDoc = await db.createDocument('669318d2002a5431ce91', '6695461400342d012490', ID.unique(), { folder: body.folder, message: body.message, seen: false, createdBy: getDiscordUserDoc.discordUsername  }, [ Permission.write(Role.user(userId))]);
+    }
+    catch(err)
+    {
+      error(err);
+    }
   }
   
   return res.json({ status: "complete" });
