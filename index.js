@@ -16,11 +16,11 @@ export default async ({ req, res, log, error }) => {
   { 
     const event = req.headers['x-appwrite-event'];
     log(req.body);
-    if(event === "users." + req.$id + ".create")
+    if(event === "users." + req.body.$id + ".create")
     {
       try
       {
-        const createDiscordUserDoc = await db.createDocument('669318d2002a5431ce91', '683661c0000023c9dd0b', req.$id, { discordUsername: req.body.name }, [ Permission.read(Role.user(req.$id)) ]);
+        const createDiscordUserDoc = await db.createDocument('669318d2002a5431ce91', '683661c0000023c9dd0b', req.body.$id, { discordUsername: req.body.name }, [ Permission.read(Role.user(req.body.$id)) ]);
       }
       catch(err)
       {
