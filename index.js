@@ -12,10 +12,10 @@ export default async ({ req, res, log, error }) => {
   const users = new Users(client);
   const db = new Databases(client);
 
+  log(req.body);
   if (req.path === "/") 
   { 
     const event = req.headers['x-appwrite-event'];
-    log(req.body);
     if(event === "users." + req.body.$id + ".create")
     {
       try
@@ -30,7 +30,7 @@ export default async ({ req, res, log, error }) => {
   }
   else if(req.path === "/create")
   {
-    const createMessageDoc = await db.createDocument('669318d2002a5431ce91', '6695461400342d012490', ID.unique(), { folder: req.body.folder, message: req.body.message, seen: false, discordUsername: userId }, [ Permission.read(Role.user(userId)), Permission.write(Role.user(userId))]);
+    const createMessageDoc = await db.createDocument('669318d2002a5431ce91', '6695461400342d012490', ID.unique(), { folder: req.body.folder, message: req.body.message, seen: false }, [ Permission.read(Role.user(userId)), Permission.write(Role.user(userId))]);
   }
   
   return res.json({ status: "complete" });
