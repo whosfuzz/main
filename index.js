@@ -12,8 +12,6 @@ export default async ({ req, res, log, error }) => {
   const users = new Users(client);
   const db = new Databases(client);
 
-  const user = await users.get(userId);
-
   if (req.path === "/") 
   { 
     const event = req.headers['x-appwrite-event'];
