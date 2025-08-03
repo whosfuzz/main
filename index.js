@@ -34,8 +34,38 @@ export default async ({ req, res, log, error }) => {
     log(body);
     try
     {
-      const getDiscordUserDoc = await db.getDocument('669318d2002a5431ce91', '683661c0000023c9dd0b', userId);
-      const createMessageDoc = await db.createDocument('669318d2002a5431ce91', '6695461400342d012490', ID.unique(), { folder: body.folder, message: body.message, seen: false, createdBy: getDiscordUserDoc.discordUsername  }, [ Permission.write(Role.user(userId))]);
+      const getDiscordUserDoc = await db.getDocument(process.env.APPWRITE_DATABASE_ID, process.env.APPWRITE_USERS_COLLECTION_ID, userId);
+      const createMessageDoc = await db.createDocument(process.env.APPWRITE_DATABASE_ID, process.env.APPWRITE_MESSAGES_COLLECTION_ID, ID.unique(), { folder: body.folder, message: body.message, seen: false, createdBy: getDiscordUserDoc.discordUsername  }, [ Permission.write(Role.user(userId))]);
+
+      const getFoldersDoc = await db.listDocuments
+      (
+          process.env.APPWRITE_DATABASE_ID, 
+          process.env.APPWRITE_FOLDERS_COLLECTION_ID, 
+          [
+              Query.equal("folder", [`${body.folder}`]),
+              Query.limit(1)
+          ]
+      );
+  
+      if(getFoldersDoc.total > 0)
+      {
+        await db.updateDocument(process.env.APPWRITE_DATABASE_ID, process.env.APPWRITE_FOLDERS_COLLECTION_ID, getFoldersDoc.documents[0].$id,
+          {
+            folder: getFoldersDoc.documents[0].folder,
+            seen: !getFoldersDoc.documents[0].seen,
+          });
+      }
+      else
+      {
+        await db.createDocument(process.env.APPWRITE_DATABASE_ID, process.env.APPWRITE_FOLDERS_COLLECTION_ID, ID.unique(),
+          {
+            folder: body.folder,
+            seen: false
+          }
+        );
+      }
+    
+    
     }
     catch(err)
     {
