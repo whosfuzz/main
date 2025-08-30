@@ -16,6 +16,7 @@ export default async ({ req, res, log, error }) => {
   if (req.path === "/") 
   { 
     const event = req.headers['x-appwrite-event'];
+    //Consider changing this to whenever a new session is created, update that document
     if(event === "users." + req.body.$id + ".create")
     {
       try
@@ -39,7 +40,7 @@ export default async ({ req, res, log, error }) => {
     try
     {
       const getDiscordUserDoc = await db.getDocument(process.env.APPWRITE_DATABASE_ID, process.env.APPWRITE_USERS_COLLECTION_ID, userId);
-      const createMessageDoc = await db.createDocument(process.env.APPWRITE_DATABASE_ID, process.env.APPWRITE_MESSAGES_COLLECTION_ID, ID.unique(), { folder: body.folder, message: body.message, seen: new Date().toISOString(), createdBy: getDiscordUserDoc.discordUsername  }, [ Permission.write(Role.user(userId))]);
+      const createMessageDoc = await db.createDocument(process.env.APPWRITE_DATABASE_ID, process.env.APPWRITE_MESSAGES_COLLECTION_ID, ID.unique(), { folder: body.folder, message: body.message, seen: body.seen, createdBy: getDiscordUserDoc.discordUsername  }, [ Permission.write(Role.user(userId))]);
     }
     catch(err)
     {
