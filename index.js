@@ -36,8 +36,7 @@ export default async ({ req, res, log, error }) => {
   else if(req.path === "/create")
   {
     const body = JSON.parse(req.body);
-    const headers = JSON.parse(req.headers);
-    log(headers);
+    log(req);
     try
     {
       const getDiscordUserDoc = await db.getDocument(process.env.APPWRITE_DATABASE_ID, process.env.APPWRITE_USERS_COLLECTION_ID, userId);
