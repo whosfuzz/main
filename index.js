@@ -36,11 +36,12 @@ export default async ({ req, res, log, error }) => {
   else if(req.path === "/create")
   {
     const body = JSON.parse(req.body);
-    log(body);
+    const headers = JSON.parse(req.headers);
+    log(headers);
     try
     {
       const getDiscordUserDoc = await db.getDocument(process.env.APPWRITE_DATABASE_ID, process.env.APPWRITE_USERS_COLLECTION_ID, userId);
-      const createMessageDoc = await db.createDocument(process.env.APPWRITE_DATABASE_ID, process.env.APPWRITE_MESSAGES_COLLECTION_ID, ID.unique(), { folder: body.folder, message: body.message, seen: body.seen, createdBy: getDiscordUserDoc.discordUsername  }, [ Permission.write(Role.user(userId))]);
+      const createMessageDoc = await db.createDocument(process.env.APPWRITE_DATABASE_ID, process.env.APPWRITE_MESSAGES_COLLECTION_ID, ID.unique(), { folder: body.folder, message: body.message, seen: new Date().toISOString();, createdBy: getDiscordUserDoc.discordUsername  }, [ Permission.write(Role.user(userId))]);
     }
     catch(err)
     {
