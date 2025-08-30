@@ -21,6 +21,10 @@ export default async ({ req, res, log, error }) => {
       try
       {
         const createDiscordUserDoc = await db.createDocument('669318d2002a5431ce91', '683661c0000023c9dd0b', req.body.$id, { discordUsername: req.body.name }, [ Permission.read(Role.user(req.body.$id)) ]);
+        await users.updateName(
+            req.body.$id
+            req.body.name
+        );
       }
       catch(err)
       {
