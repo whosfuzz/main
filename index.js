@@ -1,4 +1,4 @@
-import { Client, Account, Databases, Users, Permission, Role, Query, ID } from 'node-appwrite';
+import { Client, TablesDB, Users, Permission, Role, ID } from 'node-appwrite';
 
 export default async ({ req, res, log, error }) => {
   
@@ -10,26 +10,35 @@ export default async ({ req, res, log, error }) => {
      .setKey(req.headers['x-appwrite-key'] ?? '');
   
   const users = new Users(client);
-  const db = new Databases(client);
+  const tablesDB = new TablesDB(client);
 
-  log(req.body);
   if (req.path === "/") 
   { 
     const event = req.headers['x-appwrite-event'];
-    //Consider changing this to whenever a new session is created, update that document
-    if(event === "users." + req.body.$id + ".create")
+
+    if(event === "users." + userId + ".sessions." + req.body.$id + ".create")
     {
       try
       {
-        const createDiscordUserDoc = await db.createDocument('669318d2002a5431ce91', '683661c0000023c9dd0b', req.body.$id, { discordUsername: req.body.name }, [ Permission.read(Role.user(req.body.$id)) ]);
-        await users.updateName(
-            req.body.$id,
-            req.body.name
-        );
+        const upsertDiscordUserDoc = await tablesDB.upsertRow({
+          databaseId: '669318d2002a5431ce91',
+          tableId: '683661c0000023c9dd0b',
+          rowId: req.body.$id,
+          data: {
+            discordUsername: req.body.name
+          }, 
+          permissions: [
+            Permission.read(Role.user(userId))
+          ]
+        });
+        const updateName = await users.updateName({
+            userId: userId,
+            name: req.body.name
+        });
       }
       catch(err)
       {
-          error(err);
+        error(err);
       }
     }
   }
@@ -39,8 +48,21 @@ export default async ({ req, res, log, error }) => {
     log(req);
     try
     {
-      const getDiscordUserDoc = await db.getDocument(process.env.APPWRITE_DATABASE_ID, process.env.APPWRITE_USERS_COLLECTION_ID, userId);
-      const createMessageDoc = await db.createDocument(process.env.APPWRITE_DATABASE_ID, process.env.APPWRITE_MESSAGES_COLLECTION_ID, ID.unique(), { folder: body.folder, message: body.message, seen: null, createdBy: getDiscordUserDoc.discordUsername  }, [ Permission.write(Role.user(userId))]);
+      const getDiscordUserDoc = await tablesDB.getRow({
+        databaseId: '669318d2002a5431ce91',
+        tableId: '683661c0000023c9dd0b',
+        rowId: userId
+      });
+
+      const createMessageDoc = await tablesDB.createRow({
+        databaseId: '669318d2002a5431ce91',
+        tableId: '6695461400342d012490',
+        rowId: ID.unique(),
+        data: {
+          folder: body.folder, message: body.message, seen: null, createdBy: getDiscordUserDoc.discordUsername
+        },
+        permissions: [ Permission.write(Role.user(userId))]
+      });
     }
     catch(err)
     {
