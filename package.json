@@ -7,10 +7,10 @@
   "scripts": {
     "format": "prettier --write ."
   },
-  "dependencies": {
-    "node-appwrite": "^12.0.1"
-  },
   "devDependencies": {
     "prettier": "^3.2.5"
+  },
+  "dependencies": {
+    "node-appwrite": "^18.0.0"
   }
 }
