@@ -58,6 +58,31 @@ export default async ({ req, res, log, error }) => {
       }
     }
   }
+  else if(req.path === "/createFolder")
+  {
+    try
+    {
+      const getDiscordUserDoc = await tablesDB.getRow({
+        databaseId: '669318d2002a5431ce91',
+        tableId: '683661c0000023c9dd0b',
+        rowId: userId
+      });
+
+      const createFolderDoc = await tablesDB.createRow({
+        databaseId: '669318d2002a5431ce91',
+        tableId: '68b28927000dbf87a0aa',
+        rowId: ID.unique(),
+        data: {
+          folder: body.folder, weekday: body.weekday, seen: null
+        },
+        permissions: [ Permission.write(Role.user(userId))]
+      });
+    }
+    catch(err)
+    {
+      error(err);
+    }
+  }
   else if(req.path === "/create")
   {
     const body = JSON.parse(req.body);
