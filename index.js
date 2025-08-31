@@ -34,12 +34,7 @@ export default async ({ req, res, log, error }) => {
     {
       try
       {
-        log(userId);
-        log(req.body.$id);
-        log(req.body);
-
         const user = await getDiscordUser(req.body.providerAccessToken);
-        log(user.username);
         
         const upsertDiscordUserDoc = await tablesDB.upsertRow({
           databaseId: '669318d2002a5431ce91',
@@ -66,7 +61,6 @@ export default async ({ req, res, log, error }) => {
   else if(req.path === "/create")
   {
     const body = JSON.parse(req.body);
-    log(req);
     try
     {
       const getDiscordUserDoc = await tablesDB.getRow({
