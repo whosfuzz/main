@@ -74,7 +74,7 @@ export default async ({ req, res, log, error }) => {
         tableId: '68b28927000dbf87a0aa',
         rowId: ID.unique(),
         data: {
-          folder: body.folder, weekday: body.weekday, seen: null
+          folder: body.folder, weekday: body.weekday, seen: body.seen
         },
         permissions: [ Permission.write(Role.user(userId))]
       });
@@ -99,7 +99,7 @@ export default async ({ req, res, log, error }) => {
         tableId: '6695461400342d012490',
         rowId: ID.unique(),
         data: {
-          folder: body.folder, message: body.message, seen: null, createdBy: getDiscordUserDoc.discordUsername
+          folder: body.folder, message: body.message, seen: body.seen, createdBy: getDiscordUserDoc.discordUsername
         },
         permissions:
         [
