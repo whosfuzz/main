@@ -40,7 +40,7 @@ export default async ({ req, res, log, error }) => {
         const upsertDiscordUserDoc = await tablesDB.upsertRow({
           databaseId: '669318d2002a5431ce91',
           tableId: '683661c0000023c9dd0b',
-          rowId: req.body.$id,
+          rowId: userId,
           data: {
             discordUsername: user.username
           }, 
