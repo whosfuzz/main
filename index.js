@@ -101,7 +101,8 @@ export default async ({ req, res, log, error }) => {
         data: {
           folder: body.folder, message: body.message, seen: null, createdBy: getDiscordUserDoc.discordUsername
         },
-        [ 
+        permissions:
+        [
           Permission.write(Role.user(userId))
         ]
       });
