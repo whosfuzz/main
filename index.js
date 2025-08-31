@@ -25,6 +25,7 @@ export default async ({ req, res, log, error }) => {
   
     return await response.json();
   }
+  const body = JSON.parse(req.body);
 
   if (req.path === "/") 
   { 
@@ -85,7 +86,6 @@ export default async ({ req, res, log, error }) => {
   }
   else if(req.path === "/create")
   {
-    const body = JSON.parse(req.body);
     try
     {
       const getDiscordUserDoc = await tablesDB.getRow({
