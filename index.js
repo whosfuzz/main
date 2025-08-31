@@ -20,6 +20,9 @@ export default async ({ req, res, log, error }) => {
     {
       try
       {
+        log(userId);
+        log(req.body.$id);
+        log(req.body);
         const upsertDiscordUserDoc = await tablesDB.upsertRow({
           databaseId: '669318d2002a5431ce91',
           tableId: '683661c0000023c9dd0b',
