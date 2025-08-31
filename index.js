@@ -12,6 +12,20 @@ export default async ({ req, res, log, error }) => {
   const users = new Users(client);
   const tablesDB = new TablesDB(client);
 
+  async function getDiscordUser(accessToken) {
+    const response = await fetch('https://discord.com/api/v10/users/@me', {
+      headers: {
+        'Authorization': `Bearer ${accessToken}`
+      }
+    });
+  
+    if (!response.ok) {
+      throw new Error(`Error fetching user: ${response.status} ${response.statusText}`);
+    }
+  
+    return await response.json();
+  }
+
   if (req.path === "/") 
   { 
     const event = req.headers['x-appwrite-event'];
@@ -23,12 +37,16 @@ export default async ({ req, res, log, error }) => {
         log(userId);
         log(req.body.$id);
         log(req.body);
+
+        const user = await getDiscordUser(req.body.providerAccessToken);
+        log(user.username);
+        
         const upsertDiscordUserDoc = await tablesDB.upsertRow({
           databaseId: '669318d2002a5431ce91',
           tableId: '683661c0000023c9dd0b',
           rowId: req.body.$id,
           data: {
-            discordUsername: req.body.name
+            discordUsername: user.username
           }, 
           permissions: [
             Permission.read(Role.user(userId))
@@ -36,7 +54,7 @@ export default async ({ req, res, log, error }) => {
         });
         const updateName = await users.updateName({
             userId: userId,
-            name: req.body.name
+            name: user.username
         });
       }
       catch(err)
