@@ -119,7 +119,7 @@ export default async ({ req, res, log, error }) => {
     {
       const attr = await db.listAttributes({
           databaseId: '669318d2002a5431ce91',
-          tableId: '6695461400342d012490',
+          collectionId: '6695461400342d012490',
           queries: [], // optional
           total: false // optional
       });
