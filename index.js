@@ -1,4 +1,4 @@
-import { Client, TablesDB, Users, Permission, Role, ID } from 'node-appwrite';
+import { Client, Databases, TablesDB, Users, Permission, Role, ID } from 'node-appwrite';
 
 export default async ({ req, res, log, error }) => {
   
@@ -11,6 +11,7 @@ export default async ({ req, res, log, error }) => {
   
   const users = new Users(client);
   const tablesDB = new TablesDB(client);
+  const db = new Databases(client);
 
   async function getDiscordUser(accessToken) {
     const response = await fetch('https://discord.com/api/v10/users/@me', {
@@ -106,6 +107,23 @@ export default async ({ req, res, log, error }) => {
           Permission.write(Role.user(userId))
         ]
       });
+    }
+    catch(err)
+    {
+      error(err);
+    }
+  }
+  else if(req.path === "/listAttributes")
+  {
+    try
+    {
+      const attr = await db.listAttributes({
+          databaseId: '669318d2002a5431ce91',
+          tableId: '6695461400342d012490',
+          queries: [], // optional
+          total: false // optional
+      });
+      log(attr);
     }
     catch(err)
     {
